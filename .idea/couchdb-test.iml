@@ -11,5 +11,6 @@
     <orderEntry type="library" name="@types/pouchdb" level="application" />
     <orderEntry type="library" name="@types/react" level="application" />
     <orderEntry type="library" name="@types/react-dom" level="application" />
+    <orderEntry type="library" name="@types/yup" level="application" />
   </component>
 </module>
