@@ -5,6 +5,7 @@ import './App.css';
 import PouchDB from 'pouchdb';
 import UserForm from './UserForm';
 import UserList from './UserList';
+import ConflictResolution from './ConflictResolution';
 
 const dbName = 'users';
 const db = new PouchDB(dbName);
@@ -22,23 +23,62 @@ class App extends Component {
   state = {
     remoteDbStatus: 'unknown',
     users: {},
+    conflicts: {},
     selectedUser: null
   };
+
   handleSubmit = async user => {
     const isNewUser = user._id === undefined;
-    const response = await (isNewUser ? db.post(user) : db.put(user));
+    try {
+      const response = await (isNewUser ? db.post(user) : db.put(user));
+      console.assert(response.ok);
+      this.setState({ selectedUser: response.id });
+    } catch (err) {
+      if (err.name === 'conflict') {
+        // IMMEDIATE conflict! (Not currently handled)
+      } else {
+        // some other error
+      }
+      throw err;
+    }
+  };
+  handleConflictResolution = async (updatedUser, conflictingUser) => {
+    this.handleSubmit(updatedUser);
+    const response = await db.remove(conflictingUser);
     console.assert(response.ok);
-    this.setState({ selectedUser: response.id });
   };
 
-  handleDbChange = ({ id, seq, changes, doc }) => {
+  handleDbChange = async ({ id, seq, changes, doc }) => {
     this.setState(state => ({
       users: {
         ...state.users,
         [id]: doc
       }
     }));
+    //If the document contains any "_conflict" references, pull all the conflicting documents and save to local state.
+    if (doc._conflicts) {
+      const conflictArray = await this.getDocConflicts(doc);
+      this.insertConflictsToState(conflictArray);
+    }
   };
+
+  async getDocConflicts(doc) {
+    if (!doc._conflicts) return [];
+    const promises = doc._conflicts.map(rev => db.get(doc._id, { rev }));
+    return await Promise.all(promises);
+  }
+  //TODO: Clean up state time after time from conflicts that are already resolved
+  insertConflictsToState(conflicts) {
+    const addConflictToCollection = (collection, conflict) => {
+      if (!collection) collection = {};
+      if (!collection[conflict._id]) collection[conflict._id] = {};
+      collection[conflict._id][conflict._rev] = conflict;
+      return collection;
+    };
+    this.setState(state => ({
+      conflicts: conflicts.reduce(addConflictToCollection, state.conflicts)
+    }));
+  }
 
   async componentDidMount() {
     db
@@ -57,12 +97,14 @@ class App extends Component {
       .changes({
         since: 'now',
         live: true,
+        conflicts: true,
         include_docs: true
       })
       .on('change', this.handleDbChange);
 
     const response = await await db.allDocs({
       include_docs: true,
+      conflicts: true,
       descending: true
     });
     const newUsers = response.rows.reduce((acc, row) => {
@@ -80,11 +122,26 @@ class App extends Component {
         selectedUser: Object.keys(users)[0]
       };
     });
+    const promises = response.rows.map(({ doc }) => this.getDocConflicts(doc));
+    const conflicts = (await Promise.all(promises)).reduce(
+      (acc, val) => acc.concat(val),
+      []
+    );
+    this.insertConflictsToState(conflicts);
   }
 
   handleSelectUser = id => this.setState({ selectedUser: id });
   handleNewUser = () => this.setState({ selectedUser: null });
   render() {
+    const user = this.state.users[this.state.selectedUser];
+    const conflictingUser =
+      user &&
+      user._conflicts &&
+      this.state.conflicts &&
+      this.state.conflicts[user._id] &&
+      this.state.conflicts[user._id] &&
+      this.state.conflicts[user._id][user._conflicts[0]];
+
     return (
       <div className="App">
         <div className="App-header">
@@ -100,10 +157,16 @@ class App extends Component {
           />
         </div>
         <div className="content panel">
-          <UserForm
-            user={this.state.users[this.state.selectedUser]}
-            onSubmit={this.handleSubmit}
-          />
+          {user &&
+            (user._conflicts ? (
+              <ConflictResolution
+                winningUser={user}
+                conflictingUser={conflictingUser}
+                onSubmit={this.handleConflictResolution}
+              />
+            ) : (
+              <UserForm user={user} onSubmit={this.handleSubmit} />
+            ))}
         </div>
         <div className="App-footer">
           Sync status:

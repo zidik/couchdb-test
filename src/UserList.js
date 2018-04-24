@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { List } from 'semantic-ui-react';
+import { List, Label } from 'semantic-ui-react';
 
 const UserList = ({ users, handleSelect, handleNewUser, selectedUser }) => (
-  <List selection>
+  <List selection divided verticalAlign="middle">
     {Object.values(users).map(user => (
       <UserListItem
         active={user._id === selectedUser}
@@ -15,15 +15,22 @@ const UserList = ({ users, handleSelect, handleNewUser, selectedUser }) => (
   </List>
 );
 const UserListItem = ({ user, handleSelect, active }) => (
-  <List.Item active={active} onClick={() => handleSelect(user._id)}>
-    <List.Content>
-      <List.Header>{`${user.firstName} ${user.lastName}`}</List.Header>
-      <List.Content>{user.email}</List.Content>
-    </List.Content>
+  <List.Item
+    active={active}
+    onClick={() => handleSelect(user._id)}
+    style={{ position: 'relative' }}
+  >
+    <List.Header>{`${user.firstName} ${user.lastName}`}</List.Header>
+    <List.Content>{user.email}</List.Content>
+    {user._conflicts && (
+      <Label size="tiny" attached="bottom right" color="orange">
+        Conflict
+      </Label>
+    )}
   </List.Item>
 );
 const NewUserListItem = ({ handleNewUser }) => (
-  <List.Item onClick={handleNewUser}>Add new user</List.Item>
+  <List.Item icon="add" onClick={handleNewUser} header="Add new user" />
 );
 
 export default UserList;

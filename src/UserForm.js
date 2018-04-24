@@ -1,56 +1,39 @@
 import React from 'react';
-import { Formik, Field } from 'formik';
-import { Form, Message, Dropdown, Header, Label } from 'semantic-ui-react';
-import countryOptions from './countryOptions';
-import Yup from 'yup';
+import { Field, Formik } from 'formik';
+import { Form, Header, Label } from 'semantic-ui-react';
+import { UserSchema, isRequiredBySchema } from './UserSchema';
 
-// While you can use any validation library (or write you own), Formik
-// comes with special support for Yup by @jquense. It has a builder API like
-// React PropTypes / Hapi.js's Joi. You can define these inline or, you may want
-// to keep them separate so you can reuse schemas (e.g. address) across your application.
-const NewUserSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Invalid email address')
-    .required('Required'),
-  firstName: Yup.string()
-    .min(2, 'Must be longer than 2 characters')
-    .max(50, 'Nice try, nobody has a first name that long')
-    .required('Required'),
-  lastName: Yup.string()
-    .min(2, 'Must be longer than 2 characters')
-    .max(50, 'Nice try, nobody has a last name that long')
-    .required('Required')
-});
-
-const isRequiredBySchema = (schema, name) =>
-  Yup.reach(schema, name)
-    .describe()
-    .tests.some(test => test === 'required');
-
-const CustomField = ({ type, name, label, placeholder, errors, touched }) => (
-  <CustomFieldComponent
+const UserFormField = ({
+  type,
+  name,
+  label,
+  errors,
+  touched,
+  disabled = false
+}) => (
+  <UserFormFieldComponent
+    disabled={disabled}
     type={type}
     name={name}
     label={label}
-    placeholder={placeholder}
-    required={isRequiredBySchema(NewUserSchema, name)}
+    required={isRequiredBySchema(UserSchema, name)}
     error={errors[name] && touched[name]}
     errorText={errors[name]}
   />
 );
 
-const CustomFieldComponent = ({
+export const UserFormFieldComponent = ({
+  disabled = false,
   type,
   name,
   label,
-  placeholder,
   required,
   error,
   errorText
 }) => (
-  <Form.Field required={required} error={error}>
+  <Form.Field disabled={disabled} required={required} error={error}>
     <label htmlFor={name}>{label}</label>
-    <Field type={type} name={name} placeholder={placeholder} />
+    <Field type={type} name={name} />
     {error && (
       <Label basic color="brown" pointing>
         {errorText}
@@ -62,39 +45,35 @@ const CustomFieldComponent = ({
 const UserForm = ({ user, onSubmit }) => (
   <div>
     <Header as="h2">
-      {user == null
-        ? 'New User'
-        : `Kasutaja: ${user.firstName} ${user.lastName}`}
+      {user == null ? 'New User' : `User: ${user.firstName} ${user.lastName}`}
     </Header>
+    <Label basic>Revision: {user._rev.split('-')[0]}</Label>
     <Formik
       enableReinitialize={true}
       initialValues={
         user || { email: '', firstName: '', lastName: '', country: [] }
       }
-      validationSchema={NewUserSchema}
+      validationSchema={UserSchema}
       onSubmit={onSubmit}
       render={({ values, errors, touched, handleSubmit, setFieldValue }) => (
         <Form error={Object.keys(errors).length !== 0} onSubmit={handleSubmit}>
-          <CustomField
+          <UserFormField
             name="firstName"
             label="First Name"
-            placeholder="Jane"
             type="text"
             errors={errors}
             touched={touched}
           />
-          <CustomField
+          <UserFormField
             name="lastName"
             label="Last Name"
-            placeholder="Doe"
             type="text"
             errors={errors}
             touched={touched}
           />
-          <CustomField
+          <UserFormField
             name="email"
             label="Email"
-            placeholder="jane@acme.com"
             type="email"
             errors={errors}
             touched={touched}
