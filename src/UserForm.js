@@ -1,6 +1,6 @@
 import React from 'react';
 import { Formik, Field } from 'formik';
-import { Form, Message, Dropdown, Header } from 'semantic-ui-react';
+import { Form, Message, Dropdown, Header, Label } from 'semantic-ui-react';
 import countryOptions from './countryOptions';
 import Yup from 'yup';
 
@@ -22,6 +22,43 @@ const NewUserSchema = Yup.object().shape({
     .required('Required')
 });
 
+const isRequiredBySchema = (schema, name) =>
+  Yup.reach(schema, name)
+    .describe()
+    .tests.some(test => test === 'required');
+
+const CustomField = ({ type, name, label, placeholder, errors, touched }) => (
+  <CustomFieldComponent
+    type={type}
+    name={name}
+    label={label}
+    placeholder={placeholder}
+    required={isRequiredBySchema(NewUserSchema, name)}
+    error={errors[name] && touched[name]}
+    errorText={errors[name]}
+  />
+);
+
+const CustomFieldComponent = ({
+  type,
+  name,
+  label,
+  placeholder,
+  required,
+  error,
+  errorText
+}) => (
+  <Form.Field required={required} error={error}>
+    <label htmlFor={name}>{label}</label>
+    <Field type={type} name={name} placeholder={placeholder} />
+    {error && (
+      <Label basic color="brown" pointing>
+        {errorText}
+      </Label>
+    )}
+  </Form.Field>
+);
+
 const UserForm = ({ user, onSubmit }) => (
   <div>
     <Header as="h2">
@@ -38,45 +75,30 @@ const UserForm = ({ user, onSubmit }) => (
       onSubmit={onSubmit}
       render={({ values, errors, touched, handleSubmit, setFieldValue }) => (
         <Form error={Object.keys(errors).length !== 0} onSubmit={handleSubmit}>
-          <Form.Field
-            required
-            label="First Name"
-            control={Field}
+          <CustomField
             name="firstName"
-            error={errors.firstName}
+            label="First Name"
             placeholder="Jane"
             type="text"
+            errors={errors}
+            touched={touched}
           />
-          {errors.firstName &&
-            touched.firstName && (
-              <div className="field-error">{errors.firstName}</div>
-            )}
-
-          <Form.Field
-            required
-            label="Last Name"
-            control={Field}
+          <CustomField
             name="lastName"
-            error={errors.lastName}
+            label="Last Name"
             placeholder="Doe"
             type="text"
+            errors={errors}
+            touched={touched}
           />
-          {errors.lastName &&
-            touched.lastName && (
-              <div className="field-error">{errors.lastName}</div>
-            )}
-
-          <Form.Field
-            required
-            label="Email"
-            control={Field}
+          <CustomField
             name="email"
-            error={errors.email}
+            label="Email"
             placeholder="jane@acme.com"
             type="email"
+            errors={errors}
+            touched={touched}
           />
-          {errors.email &&
-            touched.email && <div className="field-error">{errors.email}</div>}
 
           {/*<Form.Field value={values.country} onChange={(e, { name, value }) => setFieldValue(name, value)} control={Dropdown} label='Country' name='country' error={errors.country} placeholder='Country' fluid multiple search selection options={countryOptions} />*/}
 

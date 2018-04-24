@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
-import { Header, List } from 'semantic-ui-react';
+import { Header } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
 import PouchDB from 'pouchdb';
 import UserForm from './UserForm';
+import UserList from './UserList';
 
-const db = new PouchDB('users');
-const remoteDB = new PouchDB('http://localhost:5984/users');
+const dbName = 'users';
+const db = new PouchDB(dbName);
+const remoteDbCredentials = {
+  username: '6c37d55c-6b96-4e4f-9113-87c36c2a5060-bluemix',
+  password: 'eb89e1a5aab226c933a959868c659ea57a99702594f183208b04e8476ce1c65d',
+  host: '6c37d55c-6b96-4e4f-9113-87c36c2a5060-bluemix.cloudant.com'
+};
+const getRemoteDbUrl = ({ username, password, host }) =>
+  `https://${username}:${password}@${host}`;
+const remoteDbUrl = getRemoteDbUrl(remoteDbCredentials);
+const remoteDB = new PouchDB(`${remoteDbUrl}/${dbName}`);
 
 class App extends Component {
   state = {
@@ -77,50 +87,31 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Header as="h1">CouchDB Test</Header>
-        Sync status:
-        {this.state.remoteDbStatus}
-        <Header as="h2">Users</Header>
-        <UserList
-          users={this.state.users}
-          handleSelect={this.handleSelectUser}
-          handleNewUser={this.handleNewUser}
-          selectedUser={this.state.selectedUser}
-        />
-        <UserForm
-          user={this.state.users[this.state.selectedUser]}
-          onSubmit={this.handleSubmit}
-        />
+        <div className="App-header">
+          <Header as="h1">CouchDB Test</Header>
+        </div>
+        <div className="sidebar panel">
+          <Header as="h2">Users</Header>
+          <UserList
+            users={this.state.users}
+            handleSelect={this.handleSelectUser}
+            handleNewUser={this.handleNewUser}
+            selectedUser={this.state.selectedUser}
+          />
+        </div>
+        <div className="content panel">
+          <UserForm
+            user={this.state.users[this.state.selectedUser]}
+            onSubmit={this.handleSubmit}
+          />
+        </div>
+        <div className="App-footer">
+          Sync status:
+          {this.state.remoteDbStatus}
+        </div>
       </div>
     );
   }
 }
-
-const UserList = ({ users, handleSelect, handleNewUser, selectedUser }) => (
-  <List selection>
-    {Object.values(users).map(user => (
-      <UserListItem
-        active={user._id === selectedUser}
-        key={user._id}
-        user={user}
-        handleSelect={handleSelect}
-      />
-    ))}
-    <NewUserListItem handleNewUser={handleNewUser} />
-  </List>
-);
-
-const UserListItem = ({ user, handleSelect, active }) => (
-  <List.Item active={active} onClick={() => handleSelect(user._id)}>
-    <List.Content>
-      <List.Header>{`${user.firstName} ${user.lastName}`}</List.Header>
-      <List.Content>${user.email}</List.Content>
-    </List.Content>
-  </List.Item>
-);
-
-const NewUserListItem = ({ handleNewUser }) => (
-  <List.Item onClick={handleNewUser}>Add new user</List.Item>
-);
 
 export default App;
