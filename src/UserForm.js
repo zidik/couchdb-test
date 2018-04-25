@@ -47,12 +47,10 @@ const UserForm = ({ user, onSubmit }) => (
     <Header as="h2">
       {user == null ? 'New User' : `User: ${user.firstName} ${user.lastName}`}
     </Header>
-    <Label basic>Revision: {user._rev && user._rev.split('-')[0]}</Label>
+    <Label basic>Revision: {user & user._rev && user._rev.split('-')[0]}</Label>
     <Formik
       enableReinitialize={true}
-      initialValues={
-        user || { email: '', firstName: '', lastName: '', country: [] }
-      }
+      initialValues={user || { email: '', firstName: '', lastName: '' }}
       validationSchema={UserSchema}
       onSubmit={onSubmit}
       render={({ values, errors, touched, handleSubmit, setFieldValue }) => (
@@ -78,8 +76,6 @@ const UserForm = ({ user, onSubmit }) => (
             errors={errors}
             touched={touched}
           />
-
-          {/*<Form.Field value={values.country} onChange={(e, { name, value }) => setFieldValue(name, value)} control={Dropdown} label='Country' name='country' error={errors.country} placeholder='Country' fluid multiple search selection options={countryOptions} />*/}
 
           <Form.Button>Save</Form.Button>
         </Form>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Formik, Field } from 'formik';
-import { Form, Message, Dropdown, Header, Label } from 'semantic-ui-react';
+import { Formik } from 'formik';
+import { Form, Header, Label } from 'semantic-ui-react';
 import { UserFormFieldComponent } from './UserForm';
 import UserForm from './UserForm';
 import { UserSchema, isRequiredBySchema } from './UserSchema';
