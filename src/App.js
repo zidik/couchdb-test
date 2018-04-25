@@ -157,16 +157,15 @@ class App extends Component {
           />
         </div>
         <div className="content panel">
-          {user &&
-            (user._conflicts ? (
-              <ConflictResolution
-                winningUser={user}
-                conflictingUser={conflictingUser}
-                onSubmit={this.handleConflictResolution}
-              />
-            ) : (
-              <UserForm user={user} onSubmit={this.handleSubmit} />
-            ))}
+          {user && user._conflicts ? (
+            <ConflictResolution
+              winningUser={user}
+              conflictingUser={conflictingUser}
+              onSubmit={this.handleConflictResolution}
+            />
+          ) : (
+            <UserForm user={user} onSubmit={this.handleSubmit} />
+          )}
         </div>
         <div className="App-footer">
           Sync status:
