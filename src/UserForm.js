@@ -47,7 +47,8 @@ const UserForm = ({ user, onSubmit }) => (
     <Header as="h2">
       {user == null ? 'New User' : `User: ${user.firstName} ${user.lastName}`}
     </Header>
-    <Label basic>Revision: {user & user._rev && user._rev.split('-')[0]}</Label>
+    {user &&
+      user._rev && <Label basic>Revision: {user._rev.split('-')[0]}</Label>}
     <Formik
       enableReinitialize={true}
       initialValues={user || { email: '', firstName: '', lastName: '' }}
