@@ -1,7 +1,14 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="BreakStatementJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="BreakStatementWithLabelJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConditionalExpressionWithIdenticalBranchesJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DefaultNotLastCaseInSwitchJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ES6CheckImport" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ES6ModulesDependencies" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="Eslint" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="FlowJSError" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
@@ -12,5 +19,12 @@
       </option>
       <option name="myCustomValuesEnabled" value="true" />
     </inspection_tool>
+    <inspection_tool class="IfStatementWithIdenticalBranchesJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="IfStatementWithTooManyBranchesJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="3" />
+    </inspection_tool>
+    <inspection_tool class="JSXNamespaceValidation" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NestedSwitchStatementJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NpmUsedModulesInstalled" enabled="true" level="ERROR" enabled_by_default="true" />
   </profile>
 </component>

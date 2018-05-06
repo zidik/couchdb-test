@@ -12,5 +12,6 @@
     <orderEntry type="library" name="@types/react" level="application" />
     <orderEntry type="library" name="@types/react-dom" level="application" />
     <orderEntry type="library" name="@types/yup" level="application" />
+    <orderEntry type="library" name="@types/react-redux" level="application" />
   </component>
 </module>

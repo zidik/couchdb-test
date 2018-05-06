@@ -1,11 +1,11 @@
 import React from 'react';
 import { List, Label } from 'semantic-ui-react';
 
-const UserList = ({ users, handleSelect, handleNewUser, selectedUser }) => (
+const UserList = ({ users, handleSelect, handleNewUser, selectedUserId }) => (
   <List selection divided verticalAlign="middle">
     {Object.values(users).map(user => (
       <UserListItem
-        active={user._id === selectedUser}
+        active={user._id === selectedUserId}
         key={user._id}
         user={user}
         handleSelect={handleSelect}
@@ -17,7 +17,7 @@ const UserList = ({ users, handleSelect, handleNewUser, selectedUser }) => (
 const UserListItem = ({ user, handleSelect, active }) => (
   <List.Item
     active={active}
-    onClick={() => handleSelect(user._id)}
+    onClick={() => handleSelect(user)}
     style={{ position: 'relative' }}
   >
     <List.Header>{`${user.firstName} ${user.lastName}`}</List.Header>
