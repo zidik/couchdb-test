@@ -3,6 +3,26 @@ import { Control, Form } from 'react-redux-form';
 import { Button, Icon, Table, Input } from 'semantic-ui-react';
 import './style.css';
 
+/***
+ * Returns true if there exists a value inside the array that is different from others.
+ * @param arr
+ * @param selector selects value to compare
+ */
+const allNotEqual = (arr, selector = u => u) =>
+  arr.map(selector).some((value, index, a) => value !== a[0]);
+
+const UserMergeFormRow = ({ versions, name, selector, model }) => (
+  <Table.Row error={allNotEqual(versions, selector)}>
+    <Table.Cell>{name}</Table.Cell>
+    <Table.Cell>
+      <Control.text component={Input} model={model} />
+    </Table.Cell>
+    {versions.map(user => (
+      <Table.Cell key={user._rev}>{selector(user)}</Table.Cell>
+    ))}
+  </Table.Row>
+);
+
 const UserMergeForm = ({ onSubmit, versions }) => (
   <Form model="editableUser" onSubmit={user => onSubmit(user, versions)}>
     <Table compact celled definition>
@@ -17,51 +37,24 @@ const UserMergeForm = ({ onSubmit, versions }) => (
       </Table.Header>
 
       <Table.Body>
-        <Table.Row
-          error={versions.some(
-            (user, index, arr) => user.firstName !== arr[0].firstName
-          )}
-        >
-          <Table.Cell>First Name</Table.Cell>
-          <Table.Cell>
-            <Control.text component={Input} model=".firstName" />
-          </Table.Cell>
-          {versions.map(user => (
-            <Table.Cell key={user._rev}>{user.firstName}</Table.Cell>
-          ))}
-        </Table.Row>
-      </Table.Body>
-
-      <Table.Body>
-        <Table.Row
-          error={versions.some(
-            (user, index, arr) => user.lastName !== arr[0].lastName
-          )}
-        >
-          <Table.Cell>Last Name</Table.Cell>
-          <Table.Cell>
-            <Control.text component={Input} model=".lastName" />
-          </Table.Cell>
-          {versions.map(user => (
-            <Table.Cell key={user._rev}>{user.lastName}</Table.Cell>
-          ))}
-        </Table.Row>
-      </Table.Body>
-
-      <Table.Body>
-        <Table.Row
-          error={versions.some(
-            (user, index, arr) => user.email !== arr[0].email
-          )}
-        >
-          <Table.Cell>E-Mail</Table.Cell>
-          <Table.Cell>
-            <Control.text component={Input} model=".email" />
-          </Table.Cell>
-          {versions.map(user => (
-            <Table.Cell key={user._rev}>{user.email}</Table.Cell>
-          ))}
-        </Table.Row>
+        <UserMergeFormRow
+          versions={versions}
+          name="First Name"
+          selector={user => user.firstName}
+          model=".firstName"
+        />
+        <UserMergeFormRow
+          versions={versions}
+          name="Last Name"
+          selector={user => user.lastName}
+          model=".lastName"
+        />
+        <UserMergeFormRow
+          versions={versions}
+          name="E-mail"
+          selector={user => user.email}
+          model=".email"
+        />
       </Table.Body>
 
       <Table.Footer fullWidth>
