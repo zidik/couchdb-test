@@ -20,7 +20,7 @@
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.2.0",
     "semantic-ui-css": "^2.3.1",
-    "semantic-ui-react": "^0.79.1"
+    "semantic-ui-react": "^0.80.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,json,css}": [
