@@ -2,46 +2,8 @@ import React from 'react';
 import { Control, Form } from 'react-redux-form';
 import { Button, Icon, Table, Input } from 'semantic-ui-react';
 import './style.css';
-/*
-const MergeField = ({value}) =>
-  <div className="mergeField">
-    <SemForm.Button/>
-    <div>{value}</div>
-  </div>;
 
-const UserMergeForm = ({onSubmit, user, conflictingUser}) =>
-  <SemForm as={Form} model="editableUser" onSubmit={user => onSubmit(user, conflictingUser)}>
-    <SemForm.Field className="mergeRow">
-      <label>
-        First name:
-        <Control.text model=".firstName" />
-      </label>
-      <MergeField value={conflictingUser && conflictingUser.firstName} />
-    </SemForm.Field>
-
-    <SemForm.Field className="mergeRow">
-      <label>
-        Last name:
-        <Control.text model=".lastName" />
-      </label>
-      <MergeField value={conflictingUser && conflictingUser.lastName} />
-    </SemForm.Field>
-    <SemForm.Field className="mergeRow">
-      <label>
-        E-mail:
-        <Control.text model=".email" />
-      </label>
-      <MergeField value={conflictingUser && conflictingUser.email} />
-    </SemForm.Field>
-    <SemForm.Button type="submit">
-      Merge
-    </SemForm.Button>
-  </SemForm>;
-
-export default UserMergeForm;
-*/
-
-const TableExampleApprove = ({ onSubmit, versions }) => (
+const UserMergeForm = ({ onSubmit, versions }) => (
   <Form model="editableUser" onSubmit={user => onSubmit(user, versions)}>
     <Table compact celled definition>
       <Table.Header>
@@ -122,4 +84,4 @@ const TableExampleApprove = ({ onSubmit, versions }) => (
   </Form>
 );
 
-export default TableExampleApprove;
+export default UserMergeForm;
