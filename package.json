@@ -7,7 +7,7 @@
     "enzyme-adapter-react-16": "^1.1.1",
     "husky": "^0.14.3",
     "lint-staged": "^7.0.4",
-    "pouchdb": "^6.4.3",
+    "pouchdb": "^7.0.0",
     "prettier": "^1.12.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
