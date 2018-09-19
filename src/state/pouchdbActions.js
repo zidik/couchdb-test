@@ -3,9 +3,9 @@ import PouchDB from 'pouchdb';
 const dbName = 'users';
 const db = new PouchDB(dbName);
 const remoteDbCredentials = {
-  username: '6c37d55c-6b96-4e4f-9113-87c36c2a5060-bluemix',
-  password: 'eb89e1a5aab226c933a959868c659ea57a99702594f183208b04e8476ce1c65d',
-  host: '6c37d55c-6b96-4e4f-9113-87c36c2a5060-bluemix.cloudant.com'
+  username: '6b74720d-7b7e-4faf-aa96-1a52a155a9f7-bluemix',
+  password: '2751db3a8d0baa6e827246de7c4c3e823593a2b3ea0035bc21979b4516dba67c',
+  host: '6b74720d-7b7e-4faf-aa96-1a52a155a9f7-bluemix.cloudant.com'
 };
 const getRemoteDbUrl = ({ username, password, host }) =>
   `https://${username}:${password}@${host}`;
