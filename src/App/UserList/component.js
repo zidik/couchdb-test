@@ -1,7 +1,12 @@
 import React from 'react';
 import { List, Label } from 'semantic-ui-react';
 
-const UserList = ({ users, handleSelect, handleNewUser, selectedUserId }) => (
+export const UserList = ({
+  users,
+  handleSelect,
+  handleNewUser,
+  selectedUserId
+}) => (
   <List selection divided verticalAlign="middle">
     {Object.values(users).map(user => (
       <UserListItem
@@ -14,7 +19,7 @@ const UserList = ({ users, handleSelect, handleNewUser, selectedUserId }) => (
     <NewUserListItem handleNewUser={handleNewUser} />
   </List>
 );
-const UserListItem = ({ user, handleSelect, active }) => (
+export const UserListItem = ({ user, handleSelect, active }) => (
   <List.Item
     active={active}
     onClick={() => handleSelect(user._id)}
@@ -29,7 +34,7 @@ const UserListItem = ({ user, handleSelect, active }) => (
     )}
   </List.Item>
 );
-const NewUserListItem = ({ handleNewUser }) => (
+export const NewUserListItem = ({ handleNewUser }) => (
   <List.Item icon="add" onClick={handleNewUser} header="Add new user" />
 );
 
