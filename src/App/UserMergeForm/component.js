@@ -32,9 +32,9 @@ const UserMergeFormRow = ({ versions, label, name, selector }) => (
   </Table.Row>
 );
 
-const UserMergeForm = ({ editableUser, versions, handleSubmit }) => (
+const UserMergeForm = ({ user, versions, handleSubmit }) => (
   <Formik
-    initialValues={editableUser}
+    initialValues={user}
     onSubmit={async (updatedUser, { setSubmitting }) => {
       await handleSubmit(updatedUser, versions);
       setSubmitting(false);

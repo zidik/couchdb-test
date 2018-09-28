@@ -17,7 +17,7 @@ const UserList = ({ users, handleSelect, handleNewUser, selectedUserId }) => (
 const UserListItem = ({ user, handleSelect, active }) => (
   <List.Item
     active={active}
-    onClick={() => handleSelect(user)}
+    onClick={() => handleSelect(user._id)}
     style={{ position: 'relative' }}
   >
     <List.Header>{`${user.firstName} ${user.lastName}`}</List.Header>

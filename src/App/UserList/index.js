@@ -1,15 +1,15 @@
 import { connect } from 'react-redux';
-import { selectEditableUser } from '../../state/actions';
+import { selectUser } from '../../state/actions';
 import Component from './component';
 
 const mapStateToProps = state => ({
-  selectedUserId: state.editableUser && state.editableUser._id,
+  selectedUserId: state.selectedUserId,
   users: state.users
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleSelect: user => dispatch(selectEditableUser(user)),
-  handleNewUser: () => dispatch(selectEditableUser(null))
+  handleSelect: id => dispatch(selectUser(id)),
+  handleNewUser: () => dispatch(selectUser(null))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Component);

@@ -7,17 +7,53 @@ import { isRequiredBySchema } from '../Schemas/schemaHelpers';
 import { generateUniqueId } from '../helpers';
 import { InputField } from '../InputField';
 
-const UserForm = ({ user, handleSubmit }) => (
-  <Formik
-    initialValues={user}
-    onSubmit={async (updatedUser, { setSubmitting }) => {
-      await handleSubmit(user, updatedUser);
-      setSubmitting(false);
-    }}
-    validationSchema={UserSchema}
-    render={RenderForm}
-  />
-);
+class UserForm extends React.Component {
+  state = {
+    enableReinitialize: true,
+    user: null
+  };
+  setReinitialization = bool => this.setState({ enableReinitialize: bool });
+
+  static getDerivedStateFromProps(props, state) {
+    if (!state.enableReinitialize) return null;
+    //Update user only, if reinitialization is enabled
+    return { user: props.user };
+  }
+
+  render() {
+    return (
+      <Formik
+        enableReinitialize={this.state.enableReinitialize}
+        initialValues={this.state.user}
+        onSubmit={async (updatedUser, { setSubmitting, resetForm }) => {
+          await this.props.handleSubmit(this.state.user, updatedUser);
+          setSubmitting(false);
+          resetForm();
+        }}
+        validationSchema={UserSchema}
+        render={props => (
+          <StatefulUserForm
+            {...props}
+            setReinitialization={this.setReinitialization}
+          />
+        )}
+      />
+    );
+  }
+}
+
+class StatefulUserForm extends React.Component {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    //has there been a change?
+    if (this.props.dirty === prevProps.dirty) return;
+    // disable reinitialization, if now dirty
+    // enable reinitialization, it now clean
+    this.props.setReinitialization(!this.props.dirty);
+  }
+  render() {
+    return <RenderForm {...this.props} />;
+  }
+}
 
 const RenderForm = ({ errors, touched, isSubmitting, handleSubmit }) => (
   <Form onSubmit={handleSubmit}>

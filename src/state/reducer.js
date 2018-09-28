@@ -1,16 +1,10 @@
-import { EDITABLE_USER_SELECTED } from './actionTypes';
+import { USER_SELECTED } from './actionTypes';
 import { combineReducers } from 'redux';
 import { LOAD_ALL_USERS, USER_CHANGE_RECEIVED } from './pouchdbActions';
 
-const initialStateEditableUser = {
-  firstName: '',
-  lastName: '',
-  email: ''
-};
-
-const editableUser = (state = initialStateEditableUser, { payload, type }) => {
+const selectedUserId = (state = null, { payload, type }) => {
   switch (type) {
-    case EDITABLE_USER_SELECTED:
+    case USER_SELECTED:
       return payload;
     default:
       return state;
@@ -70,5 +64,5 @@ const userConflicts = (state = {}, { type, payload }) => {
 export const reducer = combineReducers({
   users,
   userConflicts,
-  editableUser
+  selectedUserId
 });

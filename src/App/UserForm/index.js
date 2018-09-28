@@ -1,11 +1,15 @@
 import { connect } from 'react-redux';
 import { createUser, updateUser } from '../../state/pouchdbActions';
 import Component from './component';
-import { selectEditableUserById } from '../../state/actions';
+import { selectUser } from '../../state/actions';
 
 const mapStateToProps = (state, ownProps) => ({
-  key: state.editableUser && state.editableUser._id, // This ensures, that new form will be created (reset) each time the _id changes.
-  user: state.editableUser || { firstName: '', lastName: '', email: '' }
+  key: state.selectedUserId, // This ensures, that new form will be created (reset) each time the _id changes.
+  user: (state.selectedUserId && state.users[state.selectedUserId]) || {
+    firstName: '',
+    lastName: '',
+    email: ''
+  }
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -18,10 +22,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       lastName,
       email
     };
-    await dispatch(
+    const resolved = await dispatch(
       isNewUser ? createUser(updatedUser) : updateUser(updatedUser)
     );
-    dispatch(selectEditableUserById(user._id));
+    dispatch(selectUser(resolved.payload.id));
   }
 });
 
