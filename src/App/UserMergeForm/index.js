@@ -12,12 +12,14 @@ const mapStateToProps = ({ userConflicts, users, editableUser }, ownProps) => {
       .map(([rev, conflict]) => conflict);
 
   return {
+    editableUser,
+    key: editableUser && editableUser._id, // This ensures, that new form will be created (reset) each time the _id changes.
     versions: [users[id], ...conflictingVersions]
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onSubmit: async (user, versions) => {
+  handleSubmit: async (user, versions) => {
     await dispatch(resolveUserConflict(user, versions));
   }
 });

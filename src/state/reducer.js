@@ -1,4 +1,3 @@
-import { createForms } from 'react-redux-form';
 import { EDITABLE_USER_SELECTED } from './actionTypes';
 import { combineReducers } from 'redux';
 import { LOAD_ALL_USERS, USER_CHANGE_RECEIVED } from './pouchdbActions';
@@ -71,8 +70,5 @@ const userConflicts = (state = {}, { type, payload }) => {
 export const reducer = combineReducers({
   users,
   userConflicts,
-
-  ...createForms({
-    editableUser
-  })
+  editableUser
 });
