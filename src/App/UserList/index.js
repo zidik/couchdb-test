@@ -12,4 +12,7 @@ const mapDispatchToProps = dispatch => ({
   handleNewUser: () => dispatch(selectUser(null))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Component);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Component);
