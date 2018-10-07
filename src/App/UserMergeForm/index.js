@@ -2,24 +2,32 @@ import { connect } from 'react-redux';
 import { resolveUserConflict } from '../../state/pouchdbActions';
 import Component from './component';
 
-const mapStateToProps = ({ userConflicts, users, editableUser }, ownProps) => {
-  const id = editableUser._id;
+const mapStateToProps = (
+  { userConflicts, users, selectedUserId },
+  ownProps
+) => {
+  const user = users[selectedUserId];
   const conflictingVersions =
     userConflicts &&
-    userConflicts[id] &&
-    Object.entries(userConflicts[id])
-      .filter(([rev, conflict]) => editableUser._conflicts.includes(rev))
+    userConflicts[selectedUserId] &&
+    Object.entries(userConflicts[selectedUserId])
+      .filter(([rev, conflict]) => user._conflicts.includes(rev))
       .map(([rev, conflict]) => conflict);
 
   return {
-    versions: [users[id], ...conflictingVersions]
+    user: user,
+    key: selectedUserId, // This ensures, that new form will be created (reset) each time the _id changes.
+    versions: [user, ...conflictingVersions]
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onSubmit: async (user, versions) => {
+  handleSubmit: async (user, versions) => {
     await dispatch(resolveUserConflict(user, versions));
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Component);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Component);

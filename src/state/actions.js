@@ -1,6 +1,10 @@
 import * as actionTypes from './actionTypes';
 
-export const selectEditableUser = user => ({
-  type: actionTypes.EDITABLE_USER_SELECTED,
-  payload: user
-});
+export function selectUser(id) {
+  if (id === undefined) throw new Error('Missing argument');
+
+  return {
+    type: actionTypes.USER_SELECTED,
+    payload: id
+  };
+}

@@ -6,7 +6,7 @@ import UserList from './UserList';
 import UserForm from './UserForm';
 import UserMergeForm from './UserMergeForm';
 
-const App = ({ remoteDbStatus, editableUserIsInConflict }) => (
+const App = ({ remoteDbStatus, selectedUserIsInConflict }) => (
   <div className="App">
     <div className="App-header">
       <Header as="h1">CouchDB Test</Header>
@@ -16,7 +16,7 @@ const App = ({ remoteDbStatus, editableUserIsInConflict }) => (
       <UserList />
     </div>
     <div className="content panel">
-      {editableUserIsInConflict ? <UserMergeForm /> : <UserForm />}
+      {selectedUserIsInConflict ? <UserMergeForm /> : <UserForm />}
     </div>
     <div className="App-footer">
       Sync status:

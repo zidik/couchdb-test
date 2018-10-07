@@ -1,26 +1,34 @@
 import Immutable from 'seamless-immutable';
-import { editableUserIsInConflict } from './selectors';
-describe('editableUserIsInConflict selector', () => {
-  test('returns true when editable user has conflicts', () => {
+import { selectedUserIsInConflict } from './selectors';
+describe('selectedUserIsInConflict selector', () => {
+  test('returns true when selected user has conflicts', () => {
     const state = Immutable({
-      editableUser: { _conflicts: {} }
+      users: { 'my-id': { _conflicts: {} } },
+      selectedUserId: 'my-id'
     });
-    expect(editableUserIsInConflict(state)).toBe(true);
+    expect(selectedUserIsInConflict(state)).toBe(true);
   });
 
-  test('returns false on when editable user has NO conflicts', () => {
+  test('is falsy on when selected user has NO conflicts', () => {
     const state = Immutable({
-      editableUser: {}
+      users: { 'my-id': {} },
+      selectedUserId: 'my-id'
     });
-    expect(editableUserIsInConflict(state)).toBeFalsy();
+    expect(selectedUserIsInConflict(state)).toBeFalsy();
   });
 
-  test('returns false when editable user is missing', () => {
-    expect(editableUserIsInConflict(Immutable({}))).toBeFalsy();
-
+  test('is falsy when selected user is missing', () => {
     const state = Immutable({
-      editableUser: null
+      users: {},
+      selectedUserId: 'my-id'
     });
-    expect(editableUserIsInConflict(state)).toBeFalsy();
+    expect(selectedUserIsInConflict(state)).toBeFalsy();
+  });
+
+  test('is falsy when no user is selected', () => {
+    const state = Immutable({
+      selectedUserId: null
+    });
+    expect(selectedUserIsInConflict(state)).toBeFalsy();
   });
 });

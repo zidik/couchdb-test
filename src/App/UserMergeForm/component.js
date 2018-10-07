@@ -1,7 +1,11 @@
 import React from 'react';
-import { Control, Form } from 'react-redux-form';
-import { Button, Icon, Table, Input } from 'semantic-ui-react';
+import { Button, Icon, Table, Form } from 'semantic-ui-react';
 import './style.css';
+import { UserSchema } from '../Schemas/UserSchema';
+import { isRequiredBySchema } from '../Schemas/schemaHelpers';
+import { generateUniqueId } from '../helpers';
+import { Field, Formik } from 'formik';
+import { InputField } from '../InputField';
 
 /***
  * Returns true if there exists a value inside the array that is different from others.
@@ -11,11 +15,16 @@ import './style.css';
 const allNotEqual = (arr, selector = u => u) =>
   arr.map(selector).some((value, index, a) => value !== a[0]);
 
-const UserMergeFormRow = ({ versions, name, selector, model }) => (
+const UserMergeFormRow = ({ versions, label, name, selector }) => (
   <Table.Row error={allNotEqual(versions, selector)}>
     <Table.Cell>{name}</Table.Cell>
     <Table.Cell>
-      <Control.text component={Input} model={model} />
+      <Field
+        id={generateUniqueId()}
+        name={name}
+        required={isRequiredBySchema(UserSchema, name)}
+        component={InputField}
+      />
     </Table.Cell>
     {versions.map(user => (
       <Table.Cell key={user._rev}>{selector(user)}</Table.Cell>
@@ -23,8 +32,20 @@ const UserMergeFormRow = ({ versions, name, selector, model }) => (
   </Table.Row>
 );
 
-const UserMergeForm = ({ onSubmit, versions }) => (
-  <Form model="editableUser" onSubmit={user => onSubmit(user, versions)}>
+const UserMergeForm = ({ user, versions, handleSubmit }) => (
+  <Formik
+    initialValues={user}
+    onSubmit={async (updatedUser, { setSubmitting }) => {
+      await handleSubmit(updatedUser, versions);
+      setSubmitting(false);
+    }}
+    validationSchema={UserSchema}
+    render={props => <RenderUserMergeForm {...props} versions={versions} />}
+  />
+);
+
+const RenderUserMergeForm = ({ versions, handleSubmit, isSubmitting }) => (
+  <Form onSubmit={handleSubmit}>
     <Table compact celled definition>
       <Table.Header>
         <Table.Row>
@@ -39,21 +60,21 @@ const UserMergeForm = ({ onSubmit, versions }) => (
       <Table.Body>
         <UserMergeFormRow
           versions={versions}
-          name="First Name"
+          label="First Name"
           selector={user => user.firstName}
-          model=".firstName"
+          name="firstName"
         />
         <UserMergeFormRow
           versions={versions}
-          name="Last Name"
+          label="Last Name"
           selector={user => user.lastName}
-          model=".lastName"
+          name="lastName"
         />
         <UserMergeFormRow
           versions={versions}
-          name="E-mail"
+          label="E-mail"
           selector={user => user.email}
-          model=".email"
+          name="email"
         />
       </Table.Body>
 
@@ -67,6 +88,7 @@ const UserMergeForm = ({ onSubmit, versions }) => (
               size="small"
               icon
               labelPosition="left"
+              disabled={isSubmitting}
             >
               <Icon name="shuffle" /> Merge
             </Button>
