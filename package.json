@@ -38,5 +38,11 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "seamless-immutable": "^7.1.4"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
