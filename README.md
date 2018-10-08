@@ -1,4 +1,6 @@
 # CouchDB Test
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fzidik%2Fcouchdb-test.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fzidik%2Fcouchdb-test?ref=badge_shield)
+
 
 Progressive Web App for managing a list of users. 
 Works offline and automatically synchronises changes whenever there is a chance.
@@ -40,3 +42,7 @@ yarn test
 * [Semantic UI React](https://react.semantic-ui.com/) - UI Component framework
 * [PouchDB](https://pouchdb.com/) - In-browser database, syncing to CouchDB
 * [prettier](https://prettier.io/) - Opinionated Code formatter
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fzidik%2Fcouchdb-test.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fzidik%2Fcouchdb-test?ref=badge_large)
