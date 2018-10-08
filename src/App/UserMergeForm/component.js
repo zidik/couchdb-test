@@ -47,56 +47,66 @@ const UserMergeForm = ({ user, versions, handleSubmit }) => (
 const RenderUserMergeForm = ({ versions, handleSubmit, isSubmitting }) => (
   <Form onSubmit={handleSubmit}>
     <Table compact celled definition>
-      <Table.Header>
-        <Table.Row>
-          <Table.HeaderCell />
-          <Table.HeaderCell>Result</Table.HeaderCell>
-          {versions.map((user, index) => (
-            <Table.HeaderCell key={user._rev}>#{index + 1}</Table.HeaderCell>
-          ))}
-        </Table.Row>
-      </Table.Header>
-
-      <Table.Body>
-        <UserMergeFormRow
-          versions={versions}
-          label="First Name"
-          selector={user => user.firstName}
-          name="firstName"
-        />
-        <UserMergeFormRow
-          versions={versions}
-          label="Last Name"
-          selector={user => user.lastName}
-          name="lastName"
-        />
-        <UserMergeFormRow
-          versions={versions}
-          label="E-mail"
-          selector={user => user.email}
-          name="email"
-        />
-      </Table.Body>
-
-      <Table.Footer fullWidth>
-        <Table.Row>
-          <Table.HeaderCell />
-          <Table.HeaderCell colSpan="4">
-            <Button
-              primary
-              type="submit"
-              size="small"
-              icon
-              labelPosition="left"
-              disabled={isSubmitting}
-            >
-              <Icon name="shuffle" /> Merge
-            </Button>
-          </Table.HeaderCell>
-        </Table.Row>
-      </Table.Footer>
+      <MergeFormHeader versions={versions} />
+      <MergeFormBody versions={versions} />
+      <MergeFormFooter isSubmitting={isSubmitting} />
     </Table>
   </Form>
+);
+
+const MergeFormHeader = ({ versions }) => (
+  <Table.Header>
+    <Table.Row>
+      <Table.HeaderCell />
+      <Table.HeaderCell>Result</Table.HeaderCell>
+      {versions.map((user, index) => (
+        <Table.HeaderCell key={user._rev}>#{index + 1}</Table.HeaderCell>
+      ))}
+    </Table.Row>
+  </Table.Header>
+);
+
+const MergeFormBody = ({ versions }) => (
+  <Table.Body>
+    <UserMergeFormRow
+      versions={versions}
+      label="First Name"
+      selector={user => user.firstName}
+      name="firstName"
+    />
+    <UserMergeFormRow
+      versions={versions}
+      label="Last Name"
+      selector={user => user.lastName}
+      name="lastName"
+    />
+    <UserMergeFormRow
+      versions={versions}
+      label="E-mail"
+      selector={user => user.email}
+      name="email"
+    />
+  </Table.Body>
+);
+
+const MergeFormFooter = ({ isSubmitting }) => (
+  <Table.Footer fullWidth>
+    <Table.Row>
+      <Table.HeaderCell />
+      <Table.HeaderCell colSpan="4">
+        <Button
+          primary
+          type="submit"
+          size="small"
+          icon
+          labelPosition="left"
+          disabled={isSubmitting}
+        >
+          <Icon name="shuffle" /> Merge
+        </Button>
+      </Table.HeaderCell>
+    </Table.Row>
+  </Table.Footer>
 );
 
 export default UserMergeForm;
