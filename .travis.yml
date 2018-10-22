@@ -2,4 +2,12 @@ language: node_js
 node_js:
   - "stable"
   - "lts/*"
+
+install:
+  - yarn global add codecov
+
+script:
+  - yarn run test:coverage
+  - codecov
+
 cache: yarn
