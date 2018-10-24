@@ -1,4 +1,6 @@
 import PouchDB from 'pouchdb';
+import { Observable } from 'rxjs';
+import { tap, retryWhen, delay } from 'rxjs/operators';
 
 const dbName = 'users';
 const db = new PouchDB(dbName);
@@ -54,25 +56,50 @@ export const startPouchDB = () => dispatch => {
 
 //Start Sync between REMOTE and LOCAL DB.
 const startSync = () => dispatch => {
-  db
-    .sync(remoteDB, {
-      live: true,
-      retry: true
-    })
-    .on('paused', err => dispatch(ChangeRemoteDbStatus('Idle')))
-    .on('active', info => dispatch(ChangeRemoteDbStatus('Active')))
-    .on('error', err => dispatch(ChangeRemoteDbStatus('Error')));
+  createSync$(db, remoteDB)
+    .pipe(
+      tap(console.log),
+      retryWhen(errors =>
+        errors.pipe(
+          tap(console.error),
+          delay(3000)
+        )
+      )
+    )
+    .subscribe(({ event }) => dispatch(ChangeRemoteDbStatus(event)));
 };
 
+const createSync$ = (db1, db2) =>
+  Observable.create(observer => {
+    const sync = db1
+      .sync(db2, { live: true })
+      //This event fires when the replication has written a new document.
+      .on('change', info => observer.next({ event: 'change', info }))
+      //This event fires when replication is completed or cancelled.
+      //In a live replication, only cancelling the replication should trigger this event.
+      .on('complete', info => {
+        observer.next({ event: 'complete', info });
+        observer.complete();
+      })
+      //Fires when the replication is paused, either because a live replication is waiting for changes, or replication has temporarily failed, with err, and is attempting to resume.
+      .on('paused', err => observer.next({ event: 'paused', err }))
+      //Fires when the replication starts actively processing changes; e.g. when it recovers from an error or new changes are available.
+      .on('active', () => observer.next({ event: 'active' }))
+      //Fired when a document failed to replicate due to validation or authorization errors.
+      .on('denied', err => observer.next({ event: 'denied', err }))
+      //Fired when the replication is stopped due to an unrecoverable failure.
+      .on('error', err => observer.error(err));
+    //Will be called, when observer unsubscribes:
+    return () => sync.cancel();
+  });
+
 const subscribeToChanges = db => dispatch => {
-  db
-    .changes({
-      since: 'now',
-      live: true,
-      conflicts: true,
-      include_docs: true
-    })
-    .on('change', change => dispatch(receiveUserDocumentChange(change)));
+  db.changes({
+    since: 'now',
+    live: true,
+    conflicts: true,
+    include_docs: true
+  }).on('change', change => dispatch(receiveUserDocumentChange(change)));
 };
 
 export const USER_CHANGE_RECEIVED = 'USER_CHANGE_RECEIVED';
