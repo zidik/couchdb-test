@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import promiseMiddleware from 'redux-promise';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import * as serviceWorker from './registerServiceWorker';
 import { reducer } from './state/reducer';
 import './index.css';
 import { startPouchDB } from './state/pouchdbActions';
@@ -25,4 +25,4 @@ ReactDOM.render(
 
 store.dispatch(startPouchDB());
 
-registerServiceWorker();
+serviceWorker.register();
