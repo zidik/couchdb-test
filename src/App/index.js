@@ -2,10 +2,11 @@ import { connect } from 'react-redux';
 import Component from './component';
 import { selectedUserIsInConflict } from './selectors';
 
-const mapStateToProps = (state, { onInstallClick }) => ({
+const mapStateToProps = (state, { onInstallRequest, canBeInstalled }) => ({
   remoteDbStatus: 'TEST',
   selectedUserIsInConflict: selectedUserIsInConflict(state),
-  onInstallClick
+  onInstallRequest,
+  canBeInstalled
 });
 
 const mapDispatchToProps = dispatch => ({});

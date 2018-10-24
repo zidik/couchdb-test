@@ -6,7 +6,12 @@ import UserList from './UserList';
 import UserForm from './UserForm';
 import UserMergeForm from './UserMergeForm';
 
-const App = ({ remoteDbStatus, selectedUserIsInConflict, onInstallClick }) => (
+const App = ({
+  remoteDbStatus,
+  selectedUserIsInConflict,
+  onInstallRequest,
+  canBeInstalled
+}) => (
   <div className="App">
     <div className="App-header">
       <Header as="h1">CouchDB Test</Header>
@@ -19,10 +24,12 @@ const App = ({ remoteDbStatus, selectedUserIsInConflict, onInstallClick }) => (
       {selectedUserIsInConflict ? <UserMergeForm /> : <UserForm />}
     </div>
     <div className="App-footer">
-      <Button icon labelPosition="right" onClick={onInstallClick}>
-        Install App
-        <Icon name="cloud download" />
-      </Button>
+      {canBeInstalled && (
+        <Button icon labelPosition="right" onClick={onInstallRequest}>
+          Install App
+          <Icon name="cloud download" />
+        </Button>
+      )}
       Sync status:
       {remoteDbStatus}
     </div>

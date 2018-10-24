@@ -16,36 +16,61 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(thunkMiddleware, promiseMiddleware))
 );
 
-const beforeInstallPromptEventInitalValue = {
-  prompt: () => console.log('App can not be installed - try again later')
-};
-
-let beforeInstallPromptEvent = beforeInstallPromptEventInitalValue;
-
-const handleInstallClick = async () => {
-  await beforeInstallPromptEvent.prompt();
-  const choiceResult = await beforeInstallPromptEvent.userChoice;
-  if (choiceResult.outcome === 'accepted') {
-    console.log('User accepted the A2HS prompt');
-  } else {
-    console.log('User dismissed the A2HS prompt');
-  }
-  beforeInstallPromptEvent = beforeInstallPromptEventInitalValue;
-};
-
 ReactDOM.render(
   <Provider store={store}>
-    <App onInstallClick={handleInstallClick} />
+    <ServiceWorkerInstaller
+      render={({ handleInstallRequest, canBeInstalled }) => (
+        <App
+          onInstallClick={handleInstallRequest}
+          canBeInstalled={canBeInstalled}
+        />
+      )}
+    />
   </Provider>,
   document.getElementById('root')
 );
 
-store.dispatch(startPouchDB());
+class ServiceWorkerInstaller extends React.Component {
+  state = {
+    installing: false
+  };
 
-serviceWorker.register({
-  onBeforeInstallPrompt: e => {
-    console.log(e.platforms);
-    beforeInstallPromptEvent = e;
-    console.log('App is ready to be installed on home screen!');
+  static beforeInstallPromptEvent = null;
+
+  componentDidMount() {
+    serviceWorker.register({
+      onBeforeInstallPrompt: e => {
+        console.log(e.platforms);
+        this.beforeInstallPromptEvent = e;
+        console.log('App is ready to be installed on home screen!');
+      }
+    });
   }
-});
+
+  handleInstallRequest = async () => {
+    if (this.beforeInstallPromptEvent === null) {
+      console.log('App can not be installed - try again later');
+      return;
+    }
+    this.installing = true;
+    await this.beforeInstallPromptEvent.prompt();
+    const choiceResult = await this.beforeInstallPromptEvent.userChoice;
+    if (choiceResult.outcome === 'accepted') {
+      console.log('User accepted the A2HS prompt');
+    } else {
+      console.log('User dismissed the A2HS prompt');
+    }
+    this.beforeInstallPromptEvent = null;
+    this.installing = false;
+  };
+
+  render() {
+    const browserReadyToInstall = this.beforeInstallPromptEvent !== null;
+    return this.props.render({
+      canBeInstalled: browserReadyToInstall && !this.state.installing,
+      handleInstallRequest: this.handleInstallRequest
+    });
+  }
+}
+
+store.dispatch(startPouchDB());
