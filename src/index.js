@@ -16,13 +16,23 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(thunkMiddleware, promiseMiddleware))
 );
 
+let prompt = () =>
+  console.log('App can not be installed yet - try again later');
+const executePrompt = () => prompt();
+
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <App onInstallClick={executePrompt} />
   </Provider>,
   document.getElementById('root')
 );
 
 store.dispatch(startPouchDB());
 
-serviceWorker.register();
+serviceWorker.register({
+  onBeforeInstallPrompt: e => {
+    console.log(e.platforms);
+    prompt = e.prompt;
+    console.log('App is ready to be installed on home screen!');
+  }
+});

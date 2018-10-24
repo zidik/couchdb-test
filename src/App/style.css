@@ -4,14 +4,14 @@
 .App {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  grid-template-rows: 70px auto 20px;
+  grid-template-rows: 70px auto 40px;
   grid-column-gap: 10px;
   height: 100vh;
 }
 .panel {
   padding-top: 10px;
   padding-bottom: 10px;
-  height: calc(100vh - 20px - 70px);
+  height: calc(100vh - 40px - 70px);
   overflow: auto;
 }
 .App-header {
@@ -24,7 +24,7 @@
 }
 .App-footer {
   padding-left: 15px;
-  background-color: #dddddd;
+  background-color: #f0f0f0;
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row-start: 3;
