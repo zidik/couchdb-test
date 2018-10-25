@@ -16,26 +16,12 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(thunkMiddleware, promiseMiddleware))
 );
 
-ReactDOM.render(
-  <Provider store={store}>
-    <ServiceWorkerInstaller
-      render={({ handleInstallRequest, canBeInstalled }) => (
-        <App
-          onInstallClick={handleInstallRequest}
-          canBeInstalled={canBeInstalled}
-        />
-      )}
-    />
-  </Provider>,
-  document.getElementById('root')
-);
-
 class ServiceWorkerInstaller extends React.Component {
   state = {
     installing: false
   };
 
-  static beforeInstallPromptEvent = null;
+  beforeInstallPromptEvent = null;
 
   componentDidMount() {
     serviceWorker.register({
@@ -72,5 +58,19 @@ class ServiceWorkerInstaller extends React.Component {
     });
   }
 }
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ServiceWorkerInstaller
+      render={({ handleInstallRequest, canBeInstalled }) => (
+        <App
+          onInstallClick={handleInstallRequest}
+          canBeInstalled={canBeInstalled}
+        />
+      )}
+    />
+  </Provider>,
+  document.getElementById('root')
+);
 
 store.dispatch(startPouchDB());
