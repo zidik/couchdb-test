@@ -18,7 +18,8 @@ const store = createStore(
 
 class ServiceWorkerInstaller extends React.Component {
   state = {
-    installing: false
+    installing: false,
+    readyToInstall: false
   };
 
   beforeInstallPromptEvent = null;
@@ -28,6 +29,7 @@ class ServiceWorkerInstaller extends React.Component {
       onBeforeInstallPrompt: e => {
         console.log(e.platforms);
         this.beforeInstallPromptEvent = e;
+        this.setState({ readyToInstall: true });
         console.log('App is ready to be installed on home screen!');
       }
     });
@@ -38,6 +40,7 @@ class ServiceWorkerInstaller extends React.Component {
       console.log('App can not be installed - try again later');
       return;
     }
+    this.readyToInstall = false;
     this.installing = true;
     await this.beforeInstallPromptEvent.prompt();
     const choiceResult = await this.beforeInstallPromptEvent.userChoice;
@@ -51,9 +54,8 @@ class ServiceWorkerInstaller extends React.Component {
   };
 
   render() {
-    const browserReadyToInstall = this.beforeInstallPromptEvent !== null;
     return this.props.render({
-      canBeInstalled: browserReadyToInstall && !this.state.installing,
+      canBeInstalled: this.state.readyToInstall && !this.state.installing,
       handleInstallRequest: this.handleInstallRequest
     });
   }
