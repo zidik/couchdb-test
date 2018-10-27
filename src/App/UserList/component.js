@@ -8,6 +8,7 @@ export const UserList = ({
   selectedUserId
 }) => (
   <List selection divided verticalAlign="middle">
+    <NewUserListItem handleNewUser={handleNewUser} />
     {Object.values(users).map(user => (
       <UserListItem
         active={user._id === selectedUserId}
@@ -16,7 +17,6 @@ export const UserList = ({
         handleSelect={handleSelect}
       />
     ))}
-    <NewUserListItem handleNewUser={handleNewUser} />
   </List>
 );
 export const UserListItem = ({ user, handleSelect, active }) => (

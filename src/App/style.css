@@ -4,29 +4,21 @@
 .App {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  grid-template-rows: 70px auto 40px;
+  grid-template-rows: auto 40px;
   grid-column-gap: 10px;
   height: 100vh;
 }
 .panel {
   padding-top: 10px;
   padding-bottom: 10px;
-  height: calc(100vh - 40px - 70px);
+  height: calc(100vh - 40px);
   overflow: auto;
-}
-.App-header {
-  padding: 25px;
-  background-color: #dddddd;
-  grid-column-start: 1;
-  grid-column-end: 3;
-  grid-row-start: 1;
-  grid-row-end: 2;
 }
 .App-footer {
   padding-left: 15px;
   background-color: #f0f0f0;
   grid-column-start: 1;
   grid-column-end: 3;
-  grid-row-start: 3;
-  grid-row-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
 }

@@ -12,9 +12,6 @@ const App = function({ remoteDbStatus, selectedUserIsInConflict }) {
 
   return (
     <div className="App">
-      <div className="App-header">
-        <Header as="h1">CouchDB Test</Header>
-      </div>
       <div className="sidebar panel">
         <Header as="h2">Users</Header>
         <UserList />
