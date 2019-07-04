@@ -21,7 +21,8 @@
     "rxjs": "^6.3.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.83.0",
-    "yup": "^0.26.6"
+    "yup": "^0.26.6",
+    "snyk": "^1.189.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,json,css}": [
@@ -34,7 +35,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "test:coverage": "react-scripts test --env=jsdom --coverage",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "husky": {
     "hooks": {
@@ -50,5 +53,6 @@
   },
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "snyk": true
 }
